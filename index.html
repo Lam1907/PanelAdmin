@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CONTROL PANEL — Danzad Malditos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="control-panel.css" />
+</head>
+<body>
+
+  <!-- ═══ HEADER ══════════════════════════════════════════════════════════ -->
+  <header class="cp-header">
+    <div class="cp-header__left">
+      <div class="cp-logo">
+        <span class="cp-logo__icon">◈</span>
+        <div class="cp-logo__text">
+          <span class="cp-logo__title">DANZAD MALDITOS</span>
+          <span class="cp-logo__sub">CONTROL PANEL v1.0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cp-header__center">
+      <div class="cp-status-bar">
+        <div class="cp-status-item" id="statusFirebase">
+          <span class="cp-status-dot" id="dotFirebase"></span>
+          <span class="cp-status-label" id="labelFirebase">FIREBASE</span>
+        </div>
+        <div class="cp-status-divider">|</div>
+        <div class="cp-status-item">
+          <span class="cp-status-label">RONDA</span>
+          <span class="cp-status-value" id="displayRound">01</span>
+        </div>
+        <div class="cp-status-divider">|</div>
+        <div class="cp-status-item">
+          <span class="cp-status-label">VOTOS</span>
+          <span class="cp-status-value" id="displayVotes">000</span>
+        </div>
+        <div class="cp-status-divider">|</div>
+        <div class="cp-status-item">
+          <span class="cp-status-label">TIMER</span>
+          <span class="cp-status-value mono" id="displayTimer">--:--</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cp-header__right">
+      <button class="cp-btn cp-btn--ghost cp-btn--sm" id="btnBack">← ADMIN</button>
+    </div>
+  </header>
+
+  <!-- ═══ MAIN ═════════════════════════════════════════════════════════════ -->
+  <main class="cp-main" id="cpMain">
+
+    <!-- ════ ESTADO 1: PRE-VOTACIÓN ═══════════════════════════════════════ -->
+    <section class="cp-state" id="statePreVoting">
+
+      <div class="cp-toolbar">
+        <div class="cp-toolbar__group">
+          <button class="cp-btn cp-btn--primary cp-btn--lg" id="btnStartVoting">
+            <span>▶</span> INICIAR VOTACIÓN
+          </button>
+          <button class="cp-btn cp-btn--warning" id="btnRestartVoting">
+            <span>↺</span> REINICIAR
+          </button>
+          <button class="cp-btn cp-btn--danger" id="btnClearData">
+            <span>✕</span> BORRAR DATOS
+          </button>
+        </div>
+        <div class="cp-toolbar__group cp-toolbar__group--right">
+          <label class="cp-field">
+            <span class="cp-field__label">DURACIÓN (seg)</span>
+            <input type="number" class="cp-input" id="inputDuration" value="120" min="10" max="3600" />
+          </label>
+        </div>
+      </div>
+
+      <div class="cp-section-header">
+        <span class="cp-section-header__line"></span>
+        <span class="cp-section-header__text">// PARTICIPANTES</span>
+        <span class="cp-section-header__line"></span>
+      </div>
+
+      <div class="cp-participants-grid" id="participantsGrid">
+        <!-- Generado dinámicamente por JS -->
+      </div>
+
+    </section>
+
+    <!-- ════ ESTADO 2: POST-VOTACIÓN ══════════════════════════════════════ -->
+    <section class="cp-state cp-state--hidden" id="statePostVoting">
+
+      <div class="cp-toolbar">
+        <div class="cp-toolbar__group">
+          <button class="cp-btn cp-btn--accent cp-btn--lg" id="btnConsolidate">
+            <span>⊕</span> CONSOLIDAR PAREJAS
+          </button>
+          <button class="cp-btn cp-btn--primary" id="btnFinalizeRound">
+            <span>▶▶</span> FINALIZAR RONDA
+          </button>
+          <button class="cp-btn cp-btn--warning" id="btnRestartVoting2">
+            <span>↺</span> REINICIAR
+          </button>
+          <button class="cp-btn cp-btn--danger" id="btnClearData2">
+            <span>✕</span> BORRAR DATOS
+          </button>
+        </div>
+        <div class="cp-toolbar__group cp-toolbar__group--right">
+          <div class="cp-badge cp-badge--closed">● VOTACIÓN CERRADA</div>
+        </div>
+      </div>
+
+      <div class="cp-section-header">
+        <span class="cp-section-header__line"></span>
+        <span class="cp-section-header__text">// PAREJAS CONSOLIDADAS</span>
+        <span class="cp-section-header__line"></span>
+      </div>
+
+      <div class="cp-pairs-grid" id="pairsGrid">
+        <!-- Generado dinámicamente por JS -->
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ═══ MODALS ══════════════════════════════════════════════════════════ -->
+
+  <!-- Confirmación genérica -->
+  <div class="cp-overlay" id="modalConfirm" role="dialog" aria-modal="true">
+    <div class="cp-modal">
+      <div class="cp-modal__header">
+        <span class="cp-modal__icon" id="modalConfirmIcon">⚠</span>
+        <h2 class="cp-modal__title" id="modalConfirmTitle">CONFIRMAR ACCIÓN</h2>
+      </div>
+      <p class="cp-modal__body" id="modalConfirmBody">¿Estás seguro?</p>
+      <div class="cp-modal__actions">
+        <button class="cp-btn cp-btn--ghost" id="modalConfirmNo">NO, CANCELAR</button>
+        <button class="cp-btn cp-btn--primary" id="modalConfirmYes">SÍ, CONFIRMAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contraseña para borrar datos -->
+  <div class="cp-overlay" id="modalPassword" role="dialog" aria-modal="true">
+    <div class="cp-modal">
+      <div class="cp-modal__header">
+        <span class="cp-modal__icon" style="color:var(--col-danger)">⛔</span>
+        <h2 class="cp-modal__title">ZONA PELIGROSA</h2>
+      </div>
+      <p class="cp-modal__body">Esta acción borrará TODOS los datos del sistema.<br/>Introduce la contraseña para continuar.</p>
+      <input type="password" class="cp-input cp-input--full" id="inputPassword" placeholder="Contraseña de administrador..." autocomplete="off" />
+      <p class="cp-modal__error" id="passwordError"></p>
+      <div class="cp-modal__actions">
+        <button class="cp-btn cp-btn--ghost" id="modalPasswordNo">CANCELAR</button>
+        <button class="cp-btn cp-btn--danger" id="modalPasswordYes">⚠ BORRAR TODO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Imagen participante -->
+  <div class="cp-overlay" id="modalImage" role="dialog" aria-modal="true">
+    <div class="cp-modal">
+      <div class="cp-modal__header">
+        <span class="cp-modal__icon">◉</span>
+        <h2 class="cp-modal__title">IMAGEN PARTICIPANTE</h2>
+      </div>
+      <div class="cp-image-options">
+        <button class="cp-btn cp-btn--ghost cp-btn--block" id="btnImageUpload">↑ SUBIR DESDE DISPOSITIVO</button>
+        <div class="cp-separator">ó</div>
+        <input type="text" class="cp-input cp-input--full" id="inputImageUrl" placeholder="https://... pegar URL de imagen" />
+        <button class="cp-btn cp-btn--accent cp-btn--block" id="btnImageUrl">↗ USAR ESTA URL</button>
+        <div class="cp-separator">ó</div>
+        <button class="cp-btn cp-btn--danger cp-btn--block" id="btnImageRemove">✕ ELIMINAR IMAGEN ACTUAL</button>
+      </div>
+      <input type="file" id="fileImageInput" accept="image/*" style="display:none" />
+      <div class="cp-modal__actions">
+        <button class="cp-btn cp-btn--ghost" id="modalImageClose">CERRAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intercambio de participante -->
+  <div class="cp-overlay" id="modalSwap" role="dialog" aria-modal="true">
+    <div class="cp-modal cp-modal--wide">
+      <div class="cp-modal__header">
+        <span class="cp-modal__icon">⇄</span>
+        <h2 class="cp-modal__title">MOVER / INTERCAMBIAR</h2>
+      </div>
+      <p class="cp-modal__body" id="modalSwapBody">Selecciona el destino:</p>
+      <div class="cp-swap-grid" id="swapGrid"></div>
+      <div class="cp-modal__actions">
+        <button class="cp-btn cp-btn--ghost" id="modalSwapClose">CANCELAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TOAST ══════════════════════════════════════════════════════════ -->
+  <div class="cp-toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- ═══ LOADING ════════════════════════════════════════════════════════ -->
+  <div class="cp-loading-overlay cp-loading-overlay--hidden" id="loadingOverlay">
+    <div class="cp-loading-inner">
+      <div class="cp-spinner"></div>
+      <span class="cp-loading-text" id="loadingText">ACTUALIZANDO...</span>
+    </div>
+  </div>
+
+  <!-- ═══ FIREBASE + APP ════════════════════════════════════════════════ -->
+  <script type="module" src="control-panel.js"></script>
+</body>
+</html>
